@@ -1,23 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
-
+import "./App.css";
+import Header from "./components/Header/Header";
+import Side from "./components/Side/Side";
+import Body from "./components/Body/Body";
+import { useState } from "react";
+import { useReducer } from "react";
+import uniqid from "uniqid";
 function App() {
+  const [togglettodo, setToggletodo] = useState(false);
+  const [formState, setformState] = useState(1);
+  const [project, setProject] = useState({ project: "", id: "" });
+  const [projects, setProjects] = useState([]);
+
+  const [todo, setTodo] = useState({
+    title: "",
+    periority: "",
+    deadline: "",
+    project: "",
+    description: "",
+    
+  });
+
+  const [todos, setTodos] = useState([]);
+  const handleProject = (e) => {
+    setProject({ project: e.target.value, id: uniqid() });
+  };
+  const handleProjects = () => {
+    setProjects([...projects, project]);
+  };
+
+ const handleTodos=()=>{
+     setTodos((prive)=>{
+       return [...prive,{...todo,id:uniqid()}]
+     })
+     console.log(todos)
+ }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <div className="side_and_body">
+        <Side
+          project={project}
+          handleProject={handleProject}
+          handleProjects={handleProjects}
+          projects={projects}
+          setProjects={setProjects}
+        />
+        <Body projects={projects} todo={todo} setTodo={setTodo} handleTodos={handleTodos}  todos={todos} />
+      </div>
     </div>
   );
 }
