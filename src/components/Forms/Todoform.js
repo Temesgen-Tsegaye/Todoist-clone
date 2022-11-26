@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const Todoform = ({ projects, todo, setTodo, setToggle, handleTodos }) => {
+const Todoform = ({ projects, todo, setTodo, setToggle, handleTodos,id }) => {
   // useEffect(()=>{
   //   console.log(todo)
   // },[todo])
@@ -96,7 +96,7 @@ const Todoform = ({ projects, todo, setTodo, setToggle, handleTodos }) => {
               setToggle(false);
             }
             {
-              handleTodos();
+              handleTodos(id);
             }
           }}
         >

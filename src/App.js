@@ -17,10 +17,26 @@ function App() {
     deadline: "",
     project: "",
     description: "",
-    
+    checked:false
+
   });
 
   const [todos, setTodos] = useState([]);
+
+  const checkChecked=(e)=>{
+    const updated=todos.map((todo)=>{
+        if(todo.id==e.target.id){
+          return {...todo,checked:!todo.checked}
+
+        }
+        else{
+          return todo
+        }
+    })
+    setTodos(updated)
+    console.log(todos)
+
+  }
   const handleProject = (e) => {
     setProject({ project: e.target.value, id: uniqid() });
   };
@@ -28,12 +44,46 @@ function App() {
     setProjects([...projects, project]);
   };
 
- const handleTodos=()=>{
-     setTodos((prive)=>{
-       return [...prive,{...todo,id:uniqid()}]
-     })
-     console.log(todos)
- }
+
+  const filtertodos=(id)=>{
+
+    const filterd=todos.filter((todo)=>{
+      return todo.id!=id
+    })
+
+    setTodos(filterd)
+    
+  
+  
+  }
+  const handleTodos = (id) => {
+  
+    
+    if(formState==1){
+      setTodos((prive) => {
+        return [...prive, { ...todo, id: uniqid() }];
+      });
+    
+    }
+    else if(formState==2){
+      const updated=todos.map((todoss)=>{
+        if(todoss.id==id){
+          
+        return {...todo,id:id}
+          
+        }
+        else {
+          return todoss
+        }
+      })
+   
+    setTodos(updated)
+    setformState(1)
+      
+    }
+   
+  }
+   
 
   return (
     <div className="App">
@@ -45,8 +95,20 @@ function App() {
           handleProjects={handleProjects}
           projects={projects}
           setProjects={setProjects}
+          setTodos={setTodos}
+          todos={todos}
         />
-        <Body projects={projects} todo={todo} setTodo={setTodo} handleTodos={handleTodos}  todos={todos} />
+        <Body
+          projects={projects}
+          todo={todo}
+          setTodo={setTodo}
+          handleTodos={handleTodos}
+          todos={todos}
+          setformState={setformState}
+          formState={formState}
+          filtertodos={filtertodos}
+          checkChecked={checkChecked}
+        />
       </div>
     </div>
   );

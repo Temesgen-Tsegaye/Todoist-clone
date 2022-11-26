@@ -1,22 +1,31 @@
 import { FaTrash } from "react-icons/fa";
 import Projectform from "../Forms/Projectform";
 import { useState } from "react";
-const Side = ({ handleProject, handleProjects, project, projects ,setProjects}) => {
+const Side = ({ handleProject, handleProjects, project, projects ,setProjects,setTodos,todos}) => {
   const [togglep, setTogglep] = useState(false);
 
   const filterProject=(e)=>{
       const id=e.currentTarget.parentElement.id
-     
+      const pro=e.currentTarget.parentElement.innerText
+     console.log(pro)
+     console.log(id)
+
        const filterd=projects.filter((pro)=>{
            return pro.id!==id
 
        })
+       const filterdtodo=todos.filter((todo)=>{
+            return todo.project!==pro
+       })
+      
     setProjects(filterd)
+    setTodos(filterdtodo)
   }
+
 
   const projectList = projects.map((project) => {
     return (
-      <div key={project.id} id={project.id} className="project">
+      <div key={project.id} foo={project.project} id={project.id} className="project">
         {project.project} <FaTrash onClick={(e)=>{filterProject(e)}} />
       </div>
     );
