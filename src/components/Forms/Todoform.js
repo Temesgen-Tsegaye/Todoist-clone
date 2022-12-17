@@ -1,31 +1,26 @@
 import { useEffect } from "react";
 
-const Todoform = ({ projects, todo, setTodo, setToggle, handleTodos,id }) => {
-  // useEffect(()=>{
-  //   console.log(todo)
-  // },[todo])
+const Todoform = ({ projects, todo, setTodo, setToggle, handleTodos, id }) => {
   const options = projects.map((items) => {
     return (
-      <option key={items.id} value={items.project}>
+      <option
+       key={items.id}
+        value={items.project}
+     
+      >
         {items.project}
       </option>
     );
   });
-  // console.log(options)
 
   const handletodo = (e) => {
+    console.log(e);
     setTodo((prive) => {
       return { ...prive, [e.target.name]: e.target.value };
     });
   };
   return (
     <div className="Todo_form">
-      {/* title: "",
-    periority: "",
-    deadline: "",
-    project: "",
-    description: "", */}
-
       <div>
         <input
           onChange={(e) => {
@@ -46,6 +41,7 @@ const Todoform = ({ projects, todo, setTodo, setToggle, handleTodos,id }) => {
             name="periority"
             id="selperi"
           >
+            
             <option value="High">High</option>
             <option value="Middle">Middle</option>
             <option value="Low">Low</option>
@@ -63,6 +59,7 @@ const Todoform = ({ projects, todo, setTodo, setToggle, handleTodos,id }) => {
             name="project"
             id="selproj"
           >
+            <option value="">index</option>
             {options}
           </select>
         </div>
@@ -91,19 +88,17 @@ const Todoform = ({ projects, todo, setTodo, setToggle, handleTodos,id }) => {
       ></textarea>
       <div className="last_todo_row">
         <button
-          onClick={(e) => {
-            {
-              setToggle(false);
-            }
-            {
-              handleTodos(id);
-            }
+          onClick={() => {
+            setToggle(false);
+
+            handleTodos(id);
+            console.log("toto");
           }}
         >
           Add
         </button>
         <button
-          onClick={(e) => {
+          onClick={() => {
             setToggle(false);
           }}
         >

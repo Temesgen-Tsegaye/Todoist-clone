@@ -1,6 +1,7 @@
 import Todoform from "../Forms/Todoform";
 import { useState } from "react";
 import { FaTrash, FaPenSquare } from "react-icons/fa";
+import { useEffect,useLayoutEffect } from "react";
 
 const Body = ({
   projects,
@@ -11,11 +12,15 @@ const Body = ({
   setformState,
   filtertodos,
   checkChecked,
+  filterdtodos
 }) => {
   const [toggle, setToggle] = useState(false);
   const [id, setId] = useState();
 
-  const todoitem = todos.map((todo) => {
+
+
+
+  const todoitem = filterdtodos.map((todo) => {
     return (
       <div className="todos" key={todo.id} id={todo.id}>
         <input
@@ -43,10 +48,15 @@ const Body = ({
         />
       </div>
     );
+  
+  
+  
   });
   return (
     <div className="Bodytodo">
       {todoitem}
+
+    
       {toggle && (
         <Todoform
           projects={projects}

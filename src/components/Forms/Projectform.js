@@ -1,15 +1,11 @@
 
 const Projectform=({project,handleProject,handleProjects, settogglep})=>{
-          const filter=()=>{
-          
-            
-
-          }
+         
     return (
         <div className='projectformcontainer'>
-            <input value={project.project} onChange={(e)=>{handleProject(e)}} type="text" />
+            <input onChange={(e)=>{handleProject(e.target.value); console.log(e.target.value)}} value={project.project} type="text" />
             <div>
-                <button onClick={()=>{{handleProjects()} {settogglep(false)}}}>Add</button>
+                <button onClick={()=>{{handleProjects()} {settogglep(false)}console.log('added')}}>Add</button>
                 <button onClick={()=>{settogglep(false)}} >Cancel</button>
             </div>
         </div>
