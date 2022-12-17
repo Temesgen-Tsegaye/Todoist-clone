@@ -2,17 +2,13 @@ import "./App.css";
 import Header from "./components/Header/Header";
 import Side from "./components/Side/Side";
 import Body from "./components/Body/Body";
-import { useState, useEffect,useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useReducer } from "react";
 import uniqid from "uniqid";
 import { useLayoutEffect } from "react";
-import {
-  differenceInCalendarQuarters,
-  differenceInDays,
-  format,
-} from "date-fns";
-import db from './firebaseconfig.js'
-import { doc, setDoc ,getDoc} from "firebase/firestore"; 
+import { differenceInDays } from "date-fns";
+import db from "./firebaseconfig.js";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 function App() {
   const [togglettodo, setToggletodo] = useState(false);
   const [formState, setformState] = useState(1);
@@ -34,23 +30,21 @@ function App() {
   const [filterddis, setfiltrddis] = useState(todos);
 
   //intialize using firestore
-  async function Initiate(){
-     const Proref= await doc(db, "State", "projects")
-     const Prodoc= await getDoc(Proref)
-    const Prodata= Prodoc.data()
-     const Todoref= await doc(db, "State", "todos")
-     const Tododoc= await getDoc(Todoref)
-    const Tododata= Tododoc.data()
-    console.log(Prodata.projects)
-    
-    setProjects(Prodata.projects)
-    setTodos(Tododata.todos)
-    
+  async function Initiate() {
+    const Proref = await doc(db, "State", "projects");
+    const Prodoc = await getDoc(Proref);
+    const Prodata = Prodoc.data();
+    const Todoref = await doc(db, "State", "todos");
+    const Tododoc = await getDoc(Todoref);
+    const Tododata = Tododoc.data();
+    console.log(Prodata.projects);
 
+    setProjects(Prodata.projects);
+    setTodos(Tododata.todos);
   }
-  useLayoutEffect(()=>{
-    Initiate()
-  },[])
+  useEffect(() => {
+    Initiate();
+  }, []);
 
   const checkChecked = (e) => {
     const updated = todos.map((todo) => {
@@ -61,15 +55,12 @@ function App() {
       }
     });
     setTodos(updated);
-  
-   
   };
   const handleProject = (e) => {
     setProject({ project: e });
   };
   const handleProjects = () => {
     setProjects([...projects, { ...project, id: uniqid() }]);
-
   };
 
   const filtertodos = (id) => {
@@ -78,14 +69,12 @@ function App() {
     });
 
     setTodos(filterd);
-
   };
   const handleTodos = (id) => {
     if (formState == 1) {
       setTodos((prive) => {
         return [...prive, { ...todo, id: uniqid() }];
       });
-    
     } else if (formState == 2) {
       const updated = todos.map((todoss) => {
         if (todoss.id == id) {
@@ -97,39 +86,43 @@ function App() {
 
       setTodos(updated);
       setformState(1);
-     
     }
-  
   };
   useLayoutEffect(() => {
     filterdtodosdis();
   }, [todos, recentyClicked]);
-useEffect(()=>{
-  if (firstRenderRef.current) {
-    firstRenderRef.current = false;
-  } else {
-    Persisttodo();
-    Persistpro();
-  }
-    
- 
+
+  let x = true;  //used as logic for clearing effect on component unmounting 
+  useEffect(() => {
    
-  
- 
-},[todos,projects])
+    if (firstRenderRef.current ) {
+      firstRenderRef.current = false;
+    } 
+     else if (x) {
+     
+      Persistpro();
+      Persisttodo();
+    }
+    return () => {
+      x = false;
+    };
+  }, [todos, projects]);
   const filterdtodosdis = () => {
     if (recentyClicked == "index") {
       var ee = todos.filter((items) => {
         return items;
       });
     } else if (recentyClicked == "today") {
-      ee=todos.filter((items)=>{
-        return differenceInDays(new Date(items.deadline), new Date())==0;
-      })
+      ee = todos.filter((items) => {
+        return differenceInDays(new Date(items.deadline), new Date()) == 0;
+      });
     } else if (recentyClicked == "week") {
-      ee=todos.filter((items)=>{
-        return differenceInDays(new Date(items.deadline), new Date())<=7||differenceInDays(new Date(items.deadline), new Date())>=0;
-      })
+      ee = todos.filter((items) => {
+        return (
+          differenceInDays(new Date(items.deadline), new Date()) <= 7 ||
+          differenceInDays(new Date(items.deadline), new Date()) >= 0
+        );
+      });
     } else {
       ee = todos.filter((items) => {
         return items.project == recentyClicked;
@@ -140,19 +133,12 @@ useEffect(()=>{
 
   //async fun for firebase
 
-async  function Persistpro(){
-    setDoc(doc(db, "State", "projects"),{projects:projects}) 
-
-    
-  
-
-}
-async function Persisttodo(){
-
-  setDoc(doc(db, "State", "todos"),{todos:todos}) 
-  
-
-}
+  function Persistpro() {
+    setDoc(doc(db, "State", "projects"), { projects: projects });
+  }
+  function Persisttodo() {
+    setDoc(doc(db, "State", "todos"), { todos: todos });
+  }
 
   return (
     <div className="App">
