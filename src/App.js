@@ -2,7 +2,7 @@ import "./App.css";
 import Header from "./components/Header/Header";
 import Side from "./components/Side/Side";
 import Body from "./components/Body/Body";
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import { useReducer } from "react";
 import uniqid from "uniqid";
 import { useLayoutEffect } from "react";
@@ -11,13 +11,15 @@ import {
   differenceInDays,
   format,
 } from "date-fns";
-
+import db from './firebaseconfig.js'
+import { doc, setDoc ,getDoc} from "firebase/firestore"; 
 function App() {
   const [togglettodo, setToggletodo] = useState(false);
   const [formState, setformState] = useState(1);
   const [project, setProject] = useState({ project: "" });
   const [projects, setProjects] = useState([]);
   const [recentyClicked, setRecentlyClicked] = useState("");
+  const firstRenderRef = useRef(true);
 
   const [todo, setTodo] = useState({
     title: "",
@@ -31,6 +33,25 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [filterddis, setfiltrddis] = useState(todos);
 
+  //intialize using firestore
+  async function Initiate(){
+     const Proref= await doc(db, "State", "projects")
+     const Prodoc= await getDoc(Proref)
+    const Prodata= Prodoc.data()
+     const Todoref= await doc(db, "State", "todos")
+     const Tododoc= await getDoc(Todoref)
+    const Tododata= Tododoc.data()
+    console.log(Prodata.projects)
+    
+    setProjects(Prodata.projects)
+    setTodos(Tododata.todos)
+    
+
+  }
+  useLayoutEffect(()=>{
+    Initiate()
+  },[])
+
   const checkChecked = (e) => {
     const updated = todos.map((todo) => {
       if (todo.id === e.target.id) {
@@ -40,13 +61,15 @@ function App() {
       }
     });
     setTodos(updated);
-    console.log(todos);
+  
+   
   };
   const handleProject = (e) => {
     setProject({ project: e });
   };
   const handleProjects = () => {
     setProjects([...projects, { ...project, id: uniqid() }]);
+
   };
 
   const filtertodos = (id) => {
@@ -55,12 +78,14 @@ function App() {
     });
 
     setTodos(filterd);
+
   };
   const handleTodos = (id) => {
     if (formState == 1) {
       setTodos((prive) => {
         return [...prive, { ...todo, id: uniqid() }];
       });
+    
     } else if (formState == 2) {
       const updated = todos.map((todoss) => {
         if (todoss.id == id) {
@@ -72,20 +97,39 @@ function App() {
 
       setTodos(updated);
       setformState(1);
+     
     }
-    console.log(todos);
+  
   };
   useLayoutEffect(() => {
     filterdtodosdis();
   }, [todos, recentyClicked]);
-
+useEffect(()=>{
+  if (firstRenderRef.current) {
+    firstRenderRef.current = false;
+  } else {
+    Persisttodo();
+    Persistpro();
+  }
+    
+ 
+   
+  
+ 
+},[todos,projects])
   const filterdtodosdis = () => {
     if (recentyClicked == "index") {
       var ee = todos.filter((items) => {
         return items;
       });
     } else if (recentyClicked == "today") {
+      ee=todos.filter((items)=>{
+        return differenceInDays(new Date(items.deadline), new Date())==0;
+      })
     } else if (recentyClicked == "week") {
+      ee=todos.filter((items)=>{
+        return differenceInDays(new Date(items.deadline), new Date())<=7||differenceInDays(new Date(items.deadline), new Date())>=0;
+      })
     } else {
       ee = todos.filter((items) => {
         return items.project == recentyClicked;
@@ -93,6 +137,22 @@ function App() {
     }
     setfiltrddis(ee);
   };
+
+  //async fun for firebase
+
+async  function Persistpro(){
+    setDoc(doc(db, "State", "projects"),{projects:projects}) 
+
+    
+  
+
+}
+async function Persisttodo(){
+
+  setDoc(doc(db, "State", "todos"),{todos:todos}) 
+  
+
+}
 
   return (
     <div className="App">
@@ -108,6 +168,8 @@ function App() {
           todos={todos}
           // filterdtodosdis={filterdtodosdis}
           setRecentlyClicked={setRecentlyClicked}
+          Persistpro={Persistpro}
+          Persisttodo={Persisttodo}
         />
         <Body
           projects={projects}

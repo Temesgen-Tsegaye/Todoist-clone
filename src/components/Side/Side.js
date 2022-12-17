@@ -1,6 +1,7 @@
 import { FaTrash } from "react-icons/fa";
 import Projectform from "../Forms/Projectform";
 import { useState } from "react";
+
 const Side = ({
   setRecentlyClicked,
   handleProject,
@@ -10,7 +11,7 @@ const Side = ({
   setProjects,
   setTodos,
   todos,
- 
+  
 }) => {
   const [togglep, setTogglep] = useState(false);
 
@@ -27,6 +28,8 @@ const Side = ({
 
     setProjects(filterd);
     setTodos(filterdtodo);
+   
+
   };
 
   const projectList = projects.map((project) => {
@@ -51,9 +54,9 @@ const Side = ({
   return (
     <div className="side">
       <div className="static-button-container">
-        <button onClick={() => {setRecentlyClicked('index');}}>index</button>
-        <button>today</button>
-        <button>in Week</button>
+        <button onClick={() => {setRecentlyClicked('index')}}>index</button>
+        <button onClick={() => {setRecentlyClicked('today')}}>today</button>
+        <button onClick={() => {setRecentlyClicked('week')}}>in Week</button>
       </div>
 
       <div className="projectsection">
